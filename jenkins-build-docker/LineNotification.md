@@ -67,3 +67,11 @@ parameters{
     }
 ```
 ![](./images/nofijob.png)
+
+**Get TOKEN From Credential**
+- First,add secret text credential
+```
+withCredentials([string(credentialsId: 'LINE_TOKEN', variable: 'LINE_TOKEN')]) {
+    notifyLINE("${params.JOB_NAME}","${params.BUILD_NUMBER}","${params.status}","${LINE_TOKEN}")  		
+}
+```

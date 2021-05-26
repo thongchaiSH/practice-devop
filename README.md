@@ -8,3 +8,4 @@
 - [Jenkins: How to use jenkins pipeline Multiple parameters](https://stackoverflow.com/questions/49273147/jenkins-how-to-use-jenkins-pipeline-multiple-parameters)
 
 - [Export/import jobs in Jenkins](https://stackoverflow.com/questions/8424228/export-import-jobs-in-jenkins)
+- [Jenkins secret text credential as variable in pipeline script](https://stackoverflow.com/questions/62596007/jenkins-secret-text-credential-as-variable-in-pipeline-script)
