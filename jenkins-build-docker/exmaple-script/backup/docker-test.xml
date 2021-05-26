@@ -1,0 +1,67 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.40">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.8.4"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.8.4">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.92">
+    <script>pipeline {
+  environment {
+    registry = &quot;thongchaidocker/docker-test&quot;
+    registryCredential = &apos;dockerhub&apos;
+    dockerImage = &apos;&apos;
+  }
+  agent any
+  tools {nodejs &quot;node&quot; }
+  stages {
+    stage(&apos;Cloning Git&apos;) {
+      steps {
+        git &apos;https://github.com/thongchaiSH/node-todo-frontend&apos;
+      }
+    }
+    stage(&apos;Build&apos;) {
+       steps {
+         sh &apos;npm install&apos;
+       }
+    }
+    stage(&apos;Test&apos;) {
+      steps {
+        sh &apos;npm test&apos;
+      }
+    }
+    stage(&apos;Building image&apos;) {
+      steps{
+        script {
+          dockerImage = docker.build registry + &quot;:$BUILD_NUMBER&quot;
+        }
+      }
+    }
+    stage(&apos;Deploy Image&apos;) {
+      steps{
+         script {
+            docker.withRegistry( &apos;&apos;, registryCredential ) {
+            dockerImage.push()
+          }
+        }
+      }
+    }
+    stage(&apos;Remove Unused docker image&apos;) {
+      steps{
+        sh &quot;docker rmi $registry:$BUILD_NUMBER&quot;
+      }
+    }
+  }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

@@ -1,0 +1,39 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.40">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.8.4"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.8.4">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.92">
+    <script>pipeline {
+  agent any
+  stages {
+    stage(&apos;Build&apos;) {
+      steps {
+            sh &apos;echo &quot;hello&quot;&apos;     		
+      }
+    }
+  }
+  post{
+    success{
+        build job:&quot;./notificationJob&quot;,parameters:[
+            string(name:&quot;JOB_NAME&quot;,value:&quot;$JOB_NAME&quot;),
+            string(name:&quot;BUILD_NUMBER&quot;,value:&quot;$BUILD_NUMBER&quot;),
+            string(name:&quot;status&quot;,value:&quot;succcess&quot;),
+        ]
+    }
+  }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

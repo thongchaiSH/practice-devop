@@ -127,3 +127,14 @@ stage('Remove Unused docker image') {
   }
 }
 ```
+
+### Export/Import jobs jenkins
+```
+java -jar jenkins-cli.jar -s http://server -auth username:password get-job myjob > myjob.xml
+java -jar jenkins-cli.jar -s http://server -auth username:password create-job newmyjob < myjob.xml
+
+Example
+```
+java -jar jenkins-cli.jar -s http://localhost:8080 -auth admin:admin get-job docker-test > docker-test.xml     
+java -jar jenkins-cli.jar -s http://localhost:8080 -auth admin:admin create-job newmyjob < docker-test.xml
+```

@@ -45,3 +45,25 @@ pipeline {
 
 ## Complete
 ![](./images/completeLine.png)
+
+## Call build job
+**MainJob**
+```
+build job:"./notificationJob",parameters:[
+            string(name:"JOB_NAME",value:"$JOB_NAME"),
+            string(name:"BUILD_NUMBER",value:"$BUILD_NUMBER"),
+            string(name:"status",value:"succcess"),
+        ]
+```
+![](./images/line-notify-call-job.png)
+
+**notificationJob**
+```
+parameters{
+        string(name: 'JOB_NAME')
+        string(name: 'BRANCH_NAME',defaultValue:'master')
+        string(name: 'BUILD_NUMBER')
+        string(name: 'status',defaultValue:'fail')
+    }
+```
+![](./images/nofijob.png)

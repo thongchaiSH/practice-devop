@@ -1,0 +1,73 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.40">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@1.8.4"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@1.8.4">
+      <jobProperties/>
+      <triggers/>
+      <parameters>
+        <string>BUILD_NUMBER</string>
+        <string>BRANCH_NAME</string>
+        <string>JOB_NAME</string>
+        <string>status</string>
+      </parameters>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>JOB_NAME</name>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BRANCH_NAME</name>
+          <defaultValue>master</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>BUILD_NUMBER</name>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>status</name>
+          <defaultValue>fail</defaultValue>
+          <trim>false</trim>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.92">
+    <script>def notifyLINE(JOB_NAME,BUILD_NUMBER,status) {
+    def token = &quot;oEry2E1ObqK6G5bpd1WC2I0666RIEVLrXhcOhPsdiPc&quot;
+    def jobName = JOB_NAME +&apos; &apos;+BRANCH_NAME
+    def buildNo = BUILD_NUMBER
+      
+    def url = &apos;https://notify-api.line.me/api/notify&apos;
+    def message = &quot;${jobName} Build #${buildNo} ${status} \r\n&quot;
+    sh &quot;curl ${url} -H &apos;Authorization: Bearer ${token}&apos; -F &apos;message=${message}&apos;&quot;
+}
+pipeline {
+    parameters{
+        string(name: &apos;JOB_NAME&apos;)
+        string(name: &apos;BRANCH_NAME&apos;,defaultValue:&apos;master&apos;)
+        string(name: &apos;BUILD_NUMBER&apos;)
+        string(name: &apos;status&apos;,defaultValue:&apos;fail&apos;)
+    }
+    agent any
+    stages {
+    stage(&apos;Alert&apos;) {
+      steps {
+            notifyLINE(&quot;${params.JOB_NAME}&quot;,&quot;${params.BUILD_NUMBER}&quot;,&quot;${params.status}&quot;)  		
+      }
+    }
+  }
+}</script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>
